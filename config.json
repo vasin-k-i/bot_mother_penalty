@@ -1,7 +1,0 @@
-{
-  "telegram_token": "ТОКЕН_БОТА_ИЗ_BOTFATHER",
-  "openai_api_key": "КЛЮЧ_ИЗ_OPENAI",
-  "target_username": "ваш_юзернейм_в_телеграм",  // без @
-  "target_chat_id": -1001234567890,  // ID группового чата
-  "sheet_name": "penalties"  // название таблицы в Google Sheets
-}
