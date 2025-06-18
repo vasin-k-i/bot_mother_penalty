@@ -6,7 +6,7 @@ import json
 import datetime
 import logging
 import gspread
-from openai import OpenAI
+
 
 from telegram import Update
 from telegram.ext import (
@@ -30,7 +30,7 @@ GOOGLE_SHEET_ID = os.environ['GOOGLE_SHEET_ID']
 GOOGLE_CREDENTIALS_JSON_PATH = os.environ['GOOGLE_CREDENTIALS_JSON_PATH']
 
 # OpenAI клиент
-client = OpenAI(api_key=OPENAI_API_KEY)
+openai.api_key = OPENAI_API_KEY
 
 # Авторизация в Google Sheets
 scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
@@ -50,11 +50,11 @@ async def is_advice(text: str) -> bool:
         f'Сообщение: "{text}"'
     )
     try:
-        response = client.chat.completions.create(
-            model="gpt-4",
-            messages=[{"role": "user", "content": prompt}],
-            temperature=0.2
-        )
+        response = openai.ChatCompletion.create(
+    model="gpt-4",
+    messages=[{"role": "user", "content": prompt}],
+    temperature=0.2
+)
         result = response.choices[0].message.content.strip().lower()
         return 'да' in result
     except Exception as e:
