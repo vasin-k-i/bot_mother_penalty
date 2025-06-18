@@ -25,7 +25,6 @@ logger = logging.getLogger(__name__)
 # Переменные окружения
 TELEGRAM_TOKEN = os.environ['TELEGRAM_TOKEN']
 OPENAI_API_KEY = os.environ['OPENAI_API_KEY']
-TARGET_USER_IDS = list(map(int, os.environ['TARGET_USER_IDS'].split(",")))
 TARGET_CHAT_ID = int(os.environ['TARGET_CHAT_ID'])
 GOOGLE_SHEET_ID = os.environ['GOOGLE_SHEET_ID']
 GOOGLE_CREDENTIALS_JSON_PATH = os.environ['GOOGLE_CREDENTIALS_JSON_PATH']
@@ -92,9 +91,6 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     user = update.message.from_user
     text = update.message.text
-
-    if user.id not in TARGET_USER_IDS:
-        return
 
     logger.info(f"Проверяем сообщение от {user.id}: {text}")
 
