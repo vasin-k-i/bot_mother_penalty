@@ -6,7 +6,7 @@ import json
 import datetime
 import logging
 import gspread
-import openai  # исправлено здесь
+import openai
 
 from telegram import Update
 from telegram.ext import (
@@ -29,7 +29,8 @@ TARGET_CHAT_ID = int(os.environ['TARGET_CHAT_ID'])
 GOOGLE_SHEET_ID = os.environ['GOOGLE_SHEET_ID']
 GOOGLE_CREDENTIALS_JSON_PATH = os.environ['GOOGLE_CREDENTIALS_JSON_PATH']
 
-openai.api_key = OPENAI_API_KEY  # исправлено здесь
+# OpenAI ключ
+openai.api_key = OPENAI_API_KEY
 
 # Авторизация в Google Sheets
 scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
@@ -37,9 +38,9 @@ with open(GOOGLE_CREDENTIALS_JSON_PATH) as f:
     creds_dict = json.load(f)
 credentials = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
 gc = gspread.authorize(credentials)
-sheet = gc.open_by_key(GOOGLE_SHEET_ID).sheet1
+sheet = gc.open_by_key(GOOGLE_SHEET_ID).sheet1  # первая вкладка
 
-# Определение, является ли текст советом
+# Проверка: является ли текст советом
 async def is_advice(text: str) -> bool:
     prompt = (
         "посмотри на текущее сообщение и скажи - является ли оно советом. "
@@ -49,12 +50,12 @@ async def is_advice(text: str) -> bool:
         f'Сообщение: "{text}"'
     )
     try:
-        response = client.chat.completions.create(
-    model="gpt-3.5-turbo",
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": prompt}],
             temperature=0.2
         )
-        result = response['choices'][0]['message']['content'].strip().lower()
+        result = response.choices[0].message.content.strip().lower()
         return 'да' in result
     except Exception as e:
         logger.error(f"Ошибка OpenAI: {e}")
@@ -94,7 +95,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     logger.info(f"Проверяем сообщение от {user.id}: {text}")
 
     if await is_advice(text):
-        today = datetime.datetime.now().weekday()
+        today = datetime.datetime.now().weekday()  # 0 = понедельник
         penalties, advices = get_week_stats(user.id)
 
         if today == 0:
