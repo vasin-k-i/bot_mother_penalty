@@ -49,8 +49,8 @@ async def is_advice(text: str) -> bool:
         f'Сообщение: "{text}"'
     )
     try:
-        response = openai.ChatCompletion.create(  # исправлено здесь
-            model="gpt-4",
+        response = client.chat.completions.create(
+    model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": prompt}],
             temperature=0.2
         )
